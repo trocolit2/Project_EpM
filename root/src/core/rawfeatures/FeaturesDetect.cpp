@@ -10,13 +10,13 @@
 
 FeaturesDetect::FeaturesDetect(std::string methodName) {
 
-    featureDetector = initFeatureDetector(methodName);
+    _featureDetector = initFeatureDetector(methodName);
 }
 
 std::vector<cv::KeyPoint> FeaturesDetect::detector(cv::Mat image) {
 
     std::vector<cv::KeyPoint> vectorKeys;
-    featureDetector->detect(image, vectorKeys);
+    _featureDetector->detect(image, vectorKeys);
     return vectorKeys;
 }
 
@@ -27,5 +27,5 @@ cv::Mat FeaturesDetect::drawKeyFeatures(std::vector<cv::KeyPoint> vectorKeys, cv
 }
 
 void FeaturesDetect::changeDetectorMethod(std::string methodName) {
-    featureDetector = initFeatureDetector(methodName);
+    _featureDetector = initFeatureDetector(methodName);
 }

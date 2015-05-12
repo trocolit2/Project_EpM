@@ -9,6 +9,11 @@
 #define SOURCE_DIRECTORY__TEST_TOOLS_TESTTOOLS_H_
 
 #define PATH_RELATIVE_ROOT_TESTBIN "../../../root/"
+
+#define PATH_DINO_DATASET "resource/dataset/dinoRing/"
+#define PATH_TEMPLE_DATASET "resource/dataset/templeRing/"
+
+
 class TestTools {
 public:
 

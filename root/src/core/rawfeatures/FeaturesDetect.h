@@ -45,17 +45,17 @@
 class FeaturesDetect {
 public:
     FeaturesDetect(std::string methodName = METHOD_FAST);
-
     std::vector<cv::KeyPoint> detector(cv::Mat image);
-    cv::Mat drawKeyFeatures(std::vector<cv::KeyPoint>, cv::Mat background);
     void changeDetectorMethod(std::string method);
+
+    cv::Mat drawKeyFeatures(std::vector<cv::KeyPoint>, cv::Mat background);
 
 protected:
     cv::Ptr<cv::FeatureDetector> initFeatureDetector(std::string methodName) {
         return cv::FeatureDetector::create(methodName);
     }
 
-    cv::Ptr<cv::FeatureDetector> featureDetector;
+    cv::Ptr<cv::FeatureDetector> _featureDetector;
 };
 
 #endif /* SOURCE_DIRECTORY__SRC_LIBRARY_FEATURESDETECT_H_ */
