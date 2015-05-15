@@ -27,9 +27,11 @@
 std::vector<std::string> listOfMethod() {
 
     std::vector<std::string> vector;
-    vector.push_back(METHOD_ORG);
-    vector.push_back(METHOD_FAST);
-    vector.push_back(METHOD_GFTT);
+    vector.push_back(METHOD_EXTRACTOR_SIFT);
+    vector.push_back(METHOD_EXTRACTOR_SURF);
+    vector.push_back(METHOD_EXTRACTOR_ORG);
+    vector.push_back(METHOD_EXTRACTOR_FAST);
+    vector.push_back(METHOD_EXTRACTOR_GFTT);
 
     // just few points..
 //    vector.push_back(METHOD_HARRIS);
@@ -45,6 +47,7 @@ std::vector<std::string> listOfMethod() {
 std::vector<std::string> adapterOfMethod() {
 
     std::vector<std::string> vector;
+    vector.push_back("");
     vector.push_back(METHOD_ADAPTED_GRID);
     vector.push_back(METHOD_ADAPTED_PYRAMID);
     return vector;
@@ -71,8 +74,8 @@ BOOST_AUTO_TEST_CASE(featureDetect_SimpleTestCase) {
             cv::vector<cv::KeyPoint> vectorKeysTemple = featureDetector.detector(imageTemple.clone());
             cv::Mat outDino = featureDetector.drawKeyFeatures(vectorKeysDino, imageDino);
             cv::Mat outTemple = featureDetector.drawKeyFeatures(vectorKeysTemple, imageTemple);
-            cv::imshow(methodName + " DINO", outDino);
-            cv::imshow(methodName + " TEMPLE", outTemple);
+//            cv::imshow(methodName + " DINO", outDino);
+//            cv::imshow(methodName + " TEMPLE", outTemple);
 //            cv::waitKey();
         }
 

@@ -7,6 +7,7 @@
 
 #include <core/rawfeatures/FeatureDescriptor.h>
 #include <core/rawfeatures/FeaturesDetect.h>
+#include <core/rawfeatures/FeaturesTools.h>
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE "FeatureDetect_test"
@@ -25,45 +26,15 @@
 
 #include "tools/TestTools.h"
 
-bool refineMatchesWithHomography(const std::vector<cv::KeyPoint>& queryKeypoints, const std::vector<cv::KeyPoint>& trainKeypoints, std::vector<cv::DMatch>& matches,
-        cv::Mat& homography, cv::Mat src, cv::Mat frameImg, float reprojectionThreshold=3.0) {
-    const int minNumberMatchesAllowed = 4;
-    if (matches.size() < minNumberMatchesAllowed)
-        return false;
-
-    // Prepare data for cv::findHomography
-    std::vector<cv::Point2f> queryPoints(matches.size());
-    std::vector<cv::Point2f> trainPoints(matches.size());
-    for (size_t i = 0; i < matches.size(); i++) {
-        queryPoints[i] = queryKeypoints[matches[i].queryIdx].pt;
-        trainPoints[i] = trainKeypoints[matches[i].trainIdx].pt;
-    }
-
-
-    // Find homography matrix and get inliers mask
-    std::vector<unsigned char> inliersMask(matches.size());
-    homography = cv::findHomography(queryPoints, trainPoints, CV_FM_RANSAC, reprojectionThreshold, inliersMask);
-    std::vector<cv::DMatch> inliers;
-    for (size_t i = 0; i < inliersMask.size(); i++)
-        if (inliersMask[i])
-            inliers.push_back(matches[i]);
-
-    matches.swap(inliers);
-    cv::Mat homoShow;
-    cv::drawMatches(src, queryKeypoints, frameImg, trainKeypoints, matches, homoShow, cv::Scalar::all(-1), CV_RGB(255, 255, 255), cv::Mat(), 2);
-    imshow("homoShow", homoShow);
-    return matches.size() > minNumberMatchesAllowed;
-
-}
-
 BOOST_AUTO_TEST_CASE(featureDetect_SimpleTestCase) {
-    std::string path = std::string(PATH_RELATIVE_ROOT_TESTBIN) + std::string(PATH_DINO_DATASET);
+    std::string path = std::string(PATH_RELATIVE_ROOT_TESTBIN) + std::string(PATH_DINO_DATASET); // dinoR0001.png
+//    std::string path = std::string(PATH_RELATIVE_ROOT_TESTBIN) + std::string(PATH_STEREO_DATASET); // test3/dir.ppm
     cv::Mat imageDino1 = cv::imread(path + "dinoR0001.png");
     cv::imshow("DINO 1", imageDino1);
-    cv::Mat imageDino2 = cv::imread(path + "dinoR0001.png");
+    cv::Mat imageDino2 = cv::imread(path + "dinoR0002.png");
     cv::imshow("DINO 2", imageDino2);
 
-    std::string detectorName = std::string(METHOD_ADAPTED_PYRAMID) + std::string(METHOD_ORG);
+    std::string detectorName = std::string(METHOD_ADAPTED_PYRAMID) + std::string(METHOD_EXTRACTOR_SIFT);
     FeaturesDetect featureDetector(detectorName);
     std::vector<cv::KeyPoint> keypoints1, keypoints2;
     keypoints1 = featureDetector.detector(imageDino1);
@@ -73,16 +44,22 @@ BOOST_AUTO_TEST_CASE(featureDetect_SimpleTestCase) {
 
     cv::imshow("out 1", out1);
     cv::imshow("out 2", out2);
-//    cv::waitKey();
 
-    FeatureDescriptor featureDescriptor(METHOD_DESCRIPTOR_ORB, METHOD_MATCH_BRUTEFORCE_L2);
+    FeatureDescriptor featureDescriptor(METHOD_DESCRIPTOR_SIFT, METHOD_MATCH_BRUTEFORCE_L2);
     std::vector<cv::DMatch> matchs = featureDescriptor.compute(imageDino1, keypoints1, imageDino2, keypoints2);
 
     cv::Mat outMatch = featureDescriptor.drawMatchImages(imageDino1, keypoints1, imageDino2, keypoints2, matchs);
     cv::imshow("matchs points", outMatch);
 
-    cv::Mat homografy;
-    refineMatchesWithHomography(keypoints1,keypoints2,matchs,homografy,imageDino1,imageDino2);
+    FeaturesTools::refineMatchesWithHomography(keypoints1, keypoints2, &matchs, 20);
+    cv::drawMatches(imageDino1, keypoints1, imageDino2, keypoints2, matchs, outMatch, cv::Scalar::all(-1), CV_RGB(255, 255, 255), cv::Mat(), 2);
+    cv::imshow("HOMOGRAFY REFINE", outMatch);
+
+    cv::Mat fundamentalMat = FeaturesTools::calcFundamentalMatrix(keypoints1, keypoints2, &matchs);
+    cv::drawMatches(imageDino1, keypoints1, imageDino2, keypoints2, matchs, outMatch, cv::Scalar::all(-1), CV_RGB(255, 255, 255), cv::Mat(), 2);
+    cv::imshow("fundamentalMatrixSelection", outMatch);
+
+    FeaturesTools::calcEpiplesFromImages(fundamentalMat, 0, 0);
 
     cv::waitKey();
 }

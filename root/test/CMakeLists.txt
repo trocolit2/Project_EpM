@@ -6,9 +6,9 @@
 include_directories("tools")
 add_subdirectory("tools")
 
-if(APPLE)
-    find_package(OpenCV REQUIRED)
-endif(APPLE)
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 include_directories (${Boost_INCLUDE_DIRS})
@@ -30,7 +30,7 @@ foreach(testSrc ${TEST_FILES})
         add_executable(${testName} ${testSrc})
 
         #link to Boost libraries AND your targets and dependencies
-        target_link_libraries(${testName} ${Boost_LIBRARIES} ${OpenCV_LIBS} ${SOURCE_LIBS})
+        target_link_libraries(${testName} ${Boost_LIBRARIES} ${OpenCV_LIBRARIES} ${SOURCE_LIBS})
 
         #I like to move testing binaries into a testBin directory
         set_target_properties(${testName} PROPERTIES 

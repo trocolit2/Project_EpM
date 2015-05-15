@@ -6,10 +6,11 @@
  */
 
 #include "FeaturesDetect.h"
+#include <opencv2/nonfree/nonfree.hpp>
 #include <iostream>
 
 FeaturesDetect::FeaturesDetect(std::string methodName) {
-
+    cv::initModule_nonfree();
     _featureDetector = initFeatureDetector(methodName);
 }
 

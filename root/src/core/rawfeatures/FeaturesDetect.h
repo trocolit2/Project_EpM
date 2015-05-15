@@ -13,14 +13,16 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
-#define METHOD_ORG "ORB"
-#define METHOD_FAST "FAST"
-#define METHOD_STAR "STAR"
-#define METHOD_HARRIS "HARRIS"
-#define METHOD_BRISK "BRISK"
-#define METHOD_DENSE "Dense"
-#define METHOD_GFTT "GFTT"
-#define METHOD_MSER "MSER"
+#define METHOD_EXTRACTOR_ORG "ORB"
+#define METHOD_EXTRACTOR_FAST "FAST"
+#define METHOD_EXTRACTOR_STAR "STAR"
+#define METHOD_EXTRACTOR_HARRIS "HARRIS"
+#define METHOD_EXTRACTOR_BRISK "BRISK"
+#define METHOD_EXTRACTOR_DENSE "Dense"
+#define METHOD_EXTRACTOR_GFTT "GFTT"
+#define METHOD_EXTRACTOR_MSER "MSER"
+#define METHOD_EXTRACTOR_SIFT "SIFT"
+#define METHOD_EXTRACTOR_SURF "SURF"
 
 #define METHOD_ADAPTED_GRID "Grid"
 #define METHOD_ADAPTED_PYRAMID "Pyramid"
@@ -44,7 +46,7 @@
 
 class FeaturesDetect {
 public:
-    FeaturesDetect(std::string methodName = METHOD_FAST);
+    FeaturesDetect(std::string methodName = METHOD_EXTRACTOR_FAST);
     std::vector<cv::KeyPoint> detector(cv::Mat image);
     void changeDetectorMethod(std::string method);
 

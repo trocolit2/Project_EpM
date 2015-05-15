@@ -12,6 +12,7 @@
 
 #define PATH_DINO_DATASET "resource/dataset/dinoRing/"
 #define PATH_TEMPLE_DATASET "resource/dataset/templeRing/"
+#define PATH_STEREO_DATASET "resource/dataset/stereoImages/"
 
 
 class TestTools {

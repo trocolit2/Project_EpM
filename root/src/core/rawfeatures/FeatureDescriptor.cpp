@@ -6,9 +6,11 @@
  */
 
 #include "FeatureDescriptor.h"
+#include <opencv2/nonfree/nonfree.hpp>
 #include <iostream>
 
 FeatureDescriptor::FeatureDescriptor(std::string descriptorName, std::string matcherName) {
+    cv::initModule_nonfree();
     _descriptorFeature = initDescriptorExtractor(descriptorName);
     _descriptorMatcher = initDescriptorMatcher(matcherName);
 }
